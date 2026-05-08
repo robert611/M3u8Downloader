@@ -10,6 +10,7 @@ pip install -r requirements.txt
 # Cmd
 venv\Scripts\activate.bat
 pip install -r requirements.txt
+python app/main.py
 
 # Linux
 source venv/bin/activate
