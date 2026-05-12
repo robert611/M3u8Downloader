@@ -1,3 +1,6 @@
+import subprocess
+import os
+
 from PySide6.QtWidgets import (
     QApplication,
     QWidget,
@@ -6,13 +9,41 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QPushButton,
+    QTextEdit,
 )
+
+url_input = None
+output_box = None
 
 def on_download_clicked():
     print("Kliknięto przycisk")
+
+    url = url_input.text()
+
+    if not url:
+        output_box.setText("Podaj URL")
+        return
+
+    try:
+        yt_dlp_path = os.path.join(os.path.dirname(__file__), "yt-dlp.exe")
+
+        result = subprocess.run(
+            [yt_dlp_path, "-F", url],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+
+        output_box.setPlainText(result.stdout)
+
+    except Exception as e:
+        output_box.setPlainText(f"Błąd:\n{e}")
+
     pass
 
 def main():
+    global url_input, output_box
+
     app = QApplication([])
 
     window = QWidget()
@@ -32,10 +63,13 @@ def main():
     top_layout.addWidget(url_input)
     top_layout.addWidget(download_button)
 
-    label = QLabel("M3U8 Downloader")
+    # Output
+    output_box = QTextEdit()
+    output_box.setReadOnly(True)
 
     layout.addLayout(top_layout)
-    layout.addWidget(label)
+    layout.addWidget(QLabel("Dostępne formaty:"))
+    layout.addWidget(output_box)
 
     window.setLayout(layout)
     window.show()
