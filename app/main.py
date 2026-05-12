@@ -12,10 +12,7 @@ from PySide6.QtWidgets import (
     QTextEdit,
 )
 
-url_input = None
-output_box = None
-
-def on_download_clicked():
+def on_download_clicked(url_input, output_box):
     print("Kliknięto przycisk")
 
     url = url_input.text()
@@ -42,8 +39,6 @@ def on_download_clicked():
     pass
 
 def main():
-    global url_input, output_box
-
     app = QApplication([])
 
     window = QWidget()
@@ -58,7 +53,9 @@ def main():
     url_input.setPlaceholderText("Wklej URL do m3u8...")
 
     download_button = QPushButton("Pobierz")
-    download_button.clicked.connect(on_download_clicked)
+    download_button.clicked.connect(
+        lambda: on_download_clicked(url_input, output_box)
+    )
 
     top_layout.addWidget(url_input)
     top_layout.addWidget(download_button)
