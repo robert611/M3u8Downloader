@@ -15,6 +15,13 @@ from PySide6.QtWidgets import (
     QTableWidgetItem,
 )
 
+from PySide6.QtCore import (
+    QThread,
+    Signal,
+)
+
+from workers.format_loader import FormatLoaderThread
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -88,85 +95,85 @@ class MainWindow(QWidget):
             self.show_error("Podaj URL")
             return
 
-        try:
-            yt_dlp_path = os.path.join(
-                os.path.dirname(os.path.dirname(__file__)),
-                "yt-dlp.exe",
+        self.load_button.setEnabled(False)
+
+        self.thread = FormatLoaderThread(url)
+
+        self.thread.finished.connect(
+            self.on_formats_loaded
+        )
+
+        self.thread.error.connect(
+            self.show_error
+        )
+
+        self.thread.finished.connect(
+            lambda: self.load_button.setEnabled(True)
+        )
+
+        self.thread.start()
+
+    def on_formats_loaded(self, output):
+        self.table.setRowCount(0)
+
+        for line in output.splitlines():
+            if not re.match(r"^\d+", line):
+                continue
+
+            parts = line.split()
+
+            if len(parts) < 3:
+                continue
+
+            format_id = parts[0]
+            ext = parts[1]
+            resolution = parts[2]
+
+            if (parts[4] == '~'):
+                size = parts[5]
+            else:
+                size = parts[4]
+
+            row = self.table.rowCount()
+
+            self.table.insertRow(row)
+
+            self.table.setItem(
+                row,
+                0,
+                QTableWidgetItem(format_id)
             )
 
-            result = subprocess.run(
-                [yt_dlp_path, "-F", url],
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
+            self.table.setItem(
+                row,
+                1,
+                QTableWidgetItem(ext)
             )
 
-            output = result.stdout
+            self.table.setItem(
+                row,
+                2,
+                QTableWidgetItem(resolution)
+            )
 
-            self.table.setRowCount(0)
+            self.table.setItem(
+                row,
+                3,
+                QTableWidgetItem(size)
+            )
 
-            for line in output.splitlines():
+            button = QPushButton("Pobierz")
 
-                if not re.match(r"^\d+", line):
-                    continue
+            button.clicked.connect(
+                lambda checked=False, f=format_id:
+                self.download_format(f)
+            )
 
-                parts = line.split()
-
-                if len(parts) < 3:
-                    continue
-
-                format_id = parts[0]
-                ext = parts[1]
-                resolution = parts[2]
-
-                if (parts[4] == '~'):
-                    size = parts[5]
-                else:
-                    size = parts[4]
-
-                row = self.table.rowCount()
-
-                self.table.insertRow(row)
-
-                self.table.setItem(
-                    row,
-                    0,
-                    QTableWidgetItem(format_id)
-                )
-
-                self.table.setItem(
-                    row,
-                    1,
-                    QTableWidgetItem(ext)
-                )
-
-                self.table.setItem(
-                    row,
-                    2,
-                    QTableWidgetItem(resolution)
-                )
-
-                self.table.setItem(
-                    row,
-                    3,
-                    QTableWidgetItem(size)
-                )
-
-                button = QPushButton("Pobierz")
-
-                button.clicked.connect(
-                    lambda checked=False, f=format_id:
-                    self.download_format(f)
-                )
-
-                self.table.setCellWidget(
-                    row,
-                    4,
-                    button
-                )
-
-        except Exception as e:
-            self.show_error(f"Błąd:\n{e}")
+            self.table.setCellWidget(
+                row,
+                4,
+                button
+            )
 
     def download_format(self, format_id):
         print(f"Pobieranie: {format_id}")
