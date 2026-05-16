@@ -22,6 +22,7 @@ from PySide6.QtCore import (
 )
 
 from workers.format_loader import FormatLoaderThread
+from workers.download_worker import DownloadWorker
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -49,6 +50,17 @@ class MainWindow(QWidget):
 
         top_layout.addWidget(self.url_input)
         top_layout.addWidget(self.load_button)
+
+        # Success box
+        self.success_box = QLabel()
+        self.success_box.setStyleSheet("""
+            background-color: #2b2b2b;
+            color: #1f883d;
+            border: 1px solid #444;
+            padding: 5px;
+        """)
+        self.success_box.setWordWrap(True)
+        self.success_box.hide()
 
         # Error box
         self.error_box = QLabel()
@@ -78,6 +90,7 @@ class MainWindow(QWidget):
 
         layout.addLayout(top_layout)
         layout.addWidget(self.error_box)
+        layout.addWidget(self.success_box)
         layout.addWidget(QLabel("Dostępne formaty:"))
         layout.addWidget(self.table)
 
@@ -180,4 +193,20 @@ class MainWindow(QWidget):
             )
 
     def download_format(self, format_id):
+        self.error_box.hide()
+
+        self.worker = DownloadWorker(
+            self.url_input.text(),
+            format_id
+        )
+
+        self.worker.finished.connect(self.on_download_finished)
+        self.worker.error.connect(self.show_error)
+
+        self.worker.start()
+
         print(f"Pobieranie: {format_id}")
+
+    def on_download_finished(self, output):
+        self.success_box.setText("Pobieranie zakończone")
+        self.success_box.show()
