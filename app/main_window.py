@@ -55,13 +55,14 @@ class MainWindow(QWidget):
 
         # layout
         self.table = QTableWidget()
-        self.table.setColumnCount(4)
+        self.table.setColumnCount(5)
 
         self.table.setHorizontalHeaderLabels([
             "ID",
             "EXT",
             "Rozdzielczość",
-            "Akcja"
+            "Rozmair",
+            "Akcja",
         ])
 
         layout.addLayout(top_layout)
@@ -118,6 +119,11 @@ class MainWindow(QWidget):
                 ext = parts[1]
                 resolution = parts[2]
 
+                if (parts[4] == '~'):
+                    size = parts[5]
+                else:
+                    size = parts[4]
+
                 row = self.table.rowCount()
 
                 self.table.insertRow(row)
@@ -140,6 +146,12 @@ class MainWindow(QWidget):
                     QTableWidgetItem(resolution)
                 )
 
+                self.table.setItem(
+                    row,
+                    3,
+                    QTableWidgetItem(size)
+                )
+
                 button = QPushButton("Pobierz")
 
                 button.clicked.connect(
@@ -149,7 +161,7 @@ class MainWindow(QWidget):
 
                 self.table.setCellWidget(
                     row,
-                    3,
+                    4,
                     button
                 )
 
