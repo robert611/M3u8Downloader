@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 )
 
 from PySide6.QtCore import (
+    Qt,
     QThread,
     Signal,
 )
@@ -63,6 +64,9 @@ class MainWindow(QWidget):
         # layout
         self.table = QTableWidget()
         self.table.setColumnCount(5)
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table.setSelectionMode(QTableWidget.NoSelection)
+        self.table.setFocusPolicy(Qt.NoFocus)
 
         self.table.setHorizontalHeaderLabels([
             "ID",
