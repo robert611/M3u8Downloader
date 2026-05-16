@@ -1,2 +1,9 @@
 .idea
 venv/
+
+app/__pycache__/
+__pycache__/
+*.pyc
+
+ffmpeg.exe
+yt-dlp.exe

@@ -15,3 +15,8 @@ python app/main.py
 # Linux
 source venv/bin/activate
 ```
+
+### Download yt-dlp.exe and ffmpeg.exe
+
+1. https://github.com/yt-dlp/yt-dlp/releases
+2. https://github.com/BtbN/FFmpeg-Builds/releases

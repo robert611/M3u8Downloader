@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
     QTextEdit,
     QTableWidget,
     QTableWidgetItem,
+    QProgressBar,
 )
 
 from PySide6.QtCore import (
@@ -73,6 +74,10 @@ class MainWindow(QWidget):
         self.error_box.setWordWrap(True)
         self.error_box.hide()
 
+        # Progress bar
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setValue(0)
+
         # layout
         self.table = QTableWidget()
         self.table.setColumnCount(5)
@@ -91,6 +96,7 @@ class MainWindow(QWidget):
         layout.addLayout(top_layout)
         layout.addWidget(self.error_box)
         layout.addWidget(self.success_box)
+        layout.addWidget(self.progress_bar)
         layout.addWidget(QLabel("Dostępne formaty:"))
         layout.addWidget(self.table)
 
@@ -193,6 +199,7 @@ class MainWindow(QWidget):
             )
 
     def download_format(self, format_id):
+        self.progress_bar.setValue(0)
         self.error_box.hide()
 
         self.worker = DownloadWorker(
@@ -200,13 +207,22 @@ class MainWindow(QWidget):
             format_id
         )
 
-        self.worker.finished.connect(self.on_download_finished)
+        self.worker.progress.connect(
+            self.progress_bar.setValue
+        )
+
+        self.worker.log.connect(
+            lambda msg: print(msg)
+        )
+
         self.worker.error.connect(self.show_error)
+
+        self.worker.finished.connect(self.on_download_finished)
 
         self.worker.start()
 
         print(f"Pobieranie: {format_id}")
 
-    def on_download_finished(self, output):
+    def on_download_finished(self):
         self.success_box.setText("Pobieranie zakończone")
         self.success_box.show()
