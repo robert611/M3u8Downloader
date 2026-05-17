@@ -32,7 +32,7 @@ class DownloadWorker(QThread):
             process = subprocess.Popen(
                 [
                     yt_dlp_path,
-                    "-f", self.format_id,
+                    "-f", f"{self.format_id}+bestaudio/{self.format_id}",
                     "--downloader", "ffmpeg",
                     "--hls-use-mpegts",
                     "--ffmpeg-location", "ffmpeg.exe",
