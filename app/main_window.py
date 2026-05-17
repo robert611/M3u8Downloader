@@ -1,29 +1,23 @@
-import os
 import re
-import subprocess
+
+from PySide6.QtCore import (
+    Qt,
+)
 
 from PySide6.QtWidgets import (
-    QApplication,
     QWidget,
     QVBoxLayout,
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QPushButton,
-    QTextEdit,
     QTableWidget,
     QTableWidgetItem,
     QProgressBar,
 )
 
-from PySide6.QtCore import (
-    Qt,
-    QThread,
-    Signal,
-)
-
-from workers.format_loader import FormatLoaderThread
 from workers.download_worker import DownloadWorker
+from workers.format_loader import FormatLoaderThread
 
 class MainWindow(QWidget):
     def __init__(self):
