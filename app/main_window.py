@@ -38,7 +38,6 @@ class MainWindow(QWidget):
         self.url_input.setPlaceholderText("Wklej URL do m3u8...")
 
         self.load_button = QPushButton("Pokaż formaty")
-
         self.load_button.clicked.connect(
             lambda: self.load_formats()
         )
@@ -78,12 +77,11 @@ class MainWindow(QWidget):
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionMode(QTableWidget.NoSelection)
         self.table.setFocusPolicy(Qt.NoFocus)
-
         self.table.setHorizontalHeaderLabels([
             "ID",
             "EXT",
             "Rozdzielczość",
-            "Rozmair",
+            "Rozmiar",
             "Akcja",
         ])
 
@@ -145,11 +143,7 @@ class MainWindow(QWidget):
             format_id = parts[0]
             ext = parts[1]
             resolution = parts[2]
-
-            if (parts[4] == '~'):
-                size = parts[5]
-            else:
-                size = parts[4]
+            size = self.extract_size(parts)
 
             row = self.table.rowCount()
 
@@ -220,3 +214,17 @@ class MainWindow(QWidget):
     def on_download_finished(self):
         self.success_box.setText("Pobieranie zakończone")
         self.success_box.show()
+
+    def extract_size(self, parts):
+        units = (
+            "B", "KB", "MB", "GB", "TB",
+            "KiB", "MiB", "GiB", "TiB",
+        )
+
+        for part in parts:
+            cleaned = part.replace("~", "").strip()
+
+            if any(unit in cleaned for unit in units):
+                return cleaned
+
+        return "Nieznany"
