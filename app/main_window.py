@@ -70,6 +70,7 @@ class MainWindow(QWidget):
         # Progress bar
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)
+        self.progress_bar.hide()
 
         # layout
         self.table = QTableWidget()
@@ -102,7 +103,9 @@ class MainWindow(QWidget):
         self.error_box.hide()
 
     def load_formats(self):
+        self.progress_bar.hide()
         self.hide_error()
+        self.success_box.hide()
 
         url = self.url_input.text()
 
@@ -187,8 +190,10 @@ class MainWindow(QWidget):
             )
 
     def download_format(self, format_id):
+        self.progress_bar.show()
         self.progress_bar.setValue(0)
-        self.error_box.hide()
+        self.hide_error()
+        self.success_box.hide()
 
         self.worker = DownloadWorker(
             self.url_input.text(),
