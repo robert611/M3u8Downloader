@@ -33,6 +33,7 @@ class DownloadWorker(QThread):
                 [
                     yt_dlp_path,
                     "-f", f"{self.format_id}+bestaudio/{self.format_id}",
+                    "--no-playlist",
                     "--downloader", "ffmpeg",
                     "--hls-use-mpegts",
                     "--ffmpeg-location", "ffmpeg.exe",

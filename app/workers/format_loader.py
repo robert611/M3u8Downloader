@@ -28,7 +28,7 @@ class FormatLoaderThread(QThread):
             )
 
             result = subprocess.run(
-                [yt_dlp_path, "-F", self.url],
+                [yt_dlp_path, "-F", "--no-playlist", self.url],
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
