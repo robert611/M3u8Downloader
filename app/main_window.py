@@ -134,8 +134,16 @@ class MainWindow(QWidget):
     def on_formats_loaded(self, output):
         self.table.setRowCount(0)
 
+        resolutions_reached = False
+        protocols = ["m3u8", "https", "http"]
+
         for line in output.splitlines():
-            if not re.match(r"^\d+", line):
+            if not resolutions_reached:
+                if "ID" in line and "EXT" in line:
+                    resolutions_reached = True
+                continue
+
+            if not any(protocol in line for protocol in protocols):
                 continue
 
             parts = line.split()
