@@ -20,3 +20,7 @@ source venv/bin/activate
 
 1. https://github.com/yt-dlp/yt-dlp/releases
 2. https://github.com/BtbN/FFmpeg-Builds/releases
+
+### Free m3u8 streams
+
+1. https://gist.github.com/Fazzani/8f89546e188f8086a46073dc5d4e2928
