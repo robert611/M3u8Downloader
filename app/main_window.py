@@ -208,6 +208,7 @@ class MainWindow(QWidget):
         self.progress_bar.setValue(0)
         self.hide_error()
         self.success_box.hide()
+        self.toggle_ui_blockade(True)
 
         self.worker = DownloadWorker(
             self.url_input.text(),
@@ -233,6 +234,12 @@ class MainWindow(QWidget):
     def on_download_finished(self):
         self.success_box.setText("Pobieranie zakończone")
         self.success_box.show()
+        self.toggle_ui_blockade(False)
+
+    def toggle_ui_blockade(self, locked):
+        self.load_button.setEnabled(not locked)
+        self.url_input.setEnabled(not locked)
+        self.table.setDisabled(locked)
 
     def extract_size(self, parts):
         units = (
