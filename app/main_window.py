@@ -1,4 +1,4 @@
-import re
+import os
 
 from PySide6.QtCore import (
     Qt,
@@ -16,14 +16,23 @@ from PySide6.QtWidgets import (
     QProgressBar,
 )
 
+from PySide6.QtGui import (
+    QIcon,
+)
+
 from workers.download_worker import DownloadWorker
 from workers.format_loader import FormatLoaderThread
+
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("M3u8 Downloader")
+        self.setWindowIcon(QIcon(os.path.join(BASE_DIR, "assets/small-icon.svg")))
         self.resize(600, 400)
 
         self.build_ui()
