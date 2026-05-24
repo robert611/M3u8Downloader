@@ -114,6 +114,7 @@ class MainWindow(QWidget):
             self.show_error("Podaj URL")
             return
 
+        self.load_button.setText("Ładowanie...")
         self.load_button.setEnabled(False)
 
         self.thread = FormatLoaderThread(url)
@@ -127,10 +128,14 @@ class MainWindow(QWidget):
         )
 
         self.thread.finished.connect(
-            lambda: self.load_button.setEnabled(True)
+            self.on_loads_format_thread_finished
         )
 
         self.thread.start()
+
+    def on_loads_format_thread_finished(self):
+        self.load_button.setEnabled(True)
+        self.load_button.setText("Pokaż format")
 
     def on_formats_loaded(self, output):
         self.table.setRowCount(0)
