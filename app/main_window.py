@@ -103,6 +103,7 @@ class MainWindow(QWidget):
         self.error_box.hide()
 
     def load_formats(self):
+        self.table.setRowCount(0)
         self.progress_bar.hide()
         self.hide_error()
         self.success_box.hide()
