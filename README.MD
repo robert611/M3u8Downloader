@@ -1,19 +1,30 @@
+### Requirements
+
+- Python 3.10
+
+### Create isolated virtual environment
+
 ```shell
 python -m venv venv
 ```
+
+### Start application
 
 ```shell
 # Powershell
 venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+python app/main.py
 
 # Cmd
 venv\Scripts\activate.bat
 pip install -r requirements.txt
 python app/main.py
 
-# Linux
+# Linux / macOS (bash/zsh)
 source venv/bin/activate
+pip install -r requirements.txt
+python app/main.py
 ```
 
 ### Download yt-dlp.exe and ffmpeg.exe
